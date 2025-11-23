@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
@@ -208,6 +210,7 @@ def perform_eda(df):
             ax.set_ylabel("Frequency")
             ax.legend()
             st.pyplot(fig)
+            plt.close(fig)
         
         with col2:
             st.subheader("Salary Boxplot")
@@ -215,6 +218,7 @@ def perform_eda(df):
             sns.boxplot(y=df['avg_salary'], ax=ax, color='#3498db')
             ax.set_ylabel("Average Salary (K$)")
             st.pyplot(fig)
+            plt.close(fig)
         
         st.subheader("Salary by Key Features")
         feature_choice = st.selectbox(
@@ -228,6 +232,7 @@ def perform_eda(df):
         ax.set_xlabel("Average Salary (K$)")
         ax.set_title(f"Average Salary by {feature_choice}")
         st.pyplot(fig)
+        plt.close(fig)
     
     with tab3:
         st.subheader("Top 10 Job Titles")
@@ -236,6 +241,7 @@ def perform_eda(df):
         top_titles.plot(kind='barh', ax=ax, color='#9b59b6')
         ax.set_xlabel("Count")
         st.pyplot(fig)
+        plt.close(fig)
         
         st.subheader("Skills Demand")
         skills = ['python_yn', 'r_yn', 'sql_yn', 'aws_yn', 'spark_yn', 'excel_yn', 'tableau_yn']
@@ -246,8 +252,9 @@ def perform_eda(df):
         skill_counts.plot(kind='bar', ax=ax, color='#1abc9c')
         ax.set_ylabel("Number of Jobs")
         ax.set_title("In-Demand Skills")
-        plt.xticks(rotation=45)
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
         st.pyplot(fig)
+        plt.close(fig)
         
         st.subheader("Geographic Distribution")
         top_states = df['job_state'].value_counts().head(15)
@@ -256,8 +263,9 @@ def perform_eda(df):
         ax.set_xlabel("State")
         ax.set_ylabel("Number of Jobs")
         ax.set_title("Top 15 States by Job Count")
-        plt.xticks(rotation=45)
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
         st.pyplot(fig)
+        plt.close(fig)
     
     with tab4:
         st.subheader("Correlation Heatmap")
@@ -271,6 +279,7 @@ def perform_eda(df):
         sns.heatmap(corr_df, annot=True, fmt='.2f', cmap='coolwarm', center=0, ax=ax, square=True)
         ax.set_title("Feature Correlation Matrix")
         st.pyplot(fig)
+        plt.close(fig)
         
         st.subheader("Salary Correlation Insights")
         salary_corr = corr_df['avg_salary'].sort_values(ascending=False)[1:]
@@ -384,6 +393,7 @@ def display_model_results(results, y_test):
         ax.set_xlabel("R² Score")
         ax.set_title("Model R² Comparison")
         st.pyplot(fig)
+        plt.close(fig)
     
     with col2:
         st.subheader("RMSE Comparison")
@@ -394,6 +404,7 @@ def display_model_results(results, y_test):
         ax.set_xlabel("RMSE ($K)")
         ax.set_title("Model RMSE Comparison")
         st.pyplot(fig)
+        plt.close(fig)
     
     # Prediction vs Actual for best model
     st.subheader(f"🎯 {best_model_name}: Predicted vs Actual")
@@ -422,6 +433,7 @@ def display_model_results(results, y_test):
     ax2.grid(True, alpha=0.3)
     
     st.pyplot(fig)
+    plt.close(fig)
     
     return best_model_name, results[best_model_name]['model']
 
@@ -447,6 +459,7 @@ def display_feature_importance(model, feature_names, model_name):
         ax.set_xlabel("Importance")
         ax.set_title(f"Top {top_n} Most Important Features - {model_name}")
         st.pyplot(fig)
+        plt.close(fig)
         
         # Feature importance table
         importance_df = pd.DataFrame({
